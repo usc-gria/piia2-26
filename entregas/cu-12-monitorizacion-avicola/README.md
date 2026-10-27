@@ -70,3 +70,4 @@ entregas/
   - **`preparacion-dataset-peso.md`**: define la transformación de las grabaciones individuales y los registros de pesaje en un dataset de imágenes etiquetadas, conservando su trazabilidad y estableciendo su división para entrenamiento, validación y test.
   - **`estimacion-peso-individual.md`**: define la estimación del peso de un pollo a partir de su imagen, incluyendo las condiciones de entrada, el resultado esperado y la evaluación del modelo.
   - **`extraccion-pollos-individuales.md`**: define la localización y extracción de animales en escenas con varios pollos, generando imágenes individuales que puedan utilizarse como entrada del estimador de peso.
+  
