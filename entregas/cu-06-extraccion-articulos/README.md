@@ -1,7 +1,7 @@
 # CU-06: extracción de información de artículos científicos mediante agentes
 
 Entidad: iMATUS (Instituto de Materiais da USC)  
-Tutores profesionales: Luis Díaz Gómez y Carmen Álvarez Lorenzo
+Tutores profesionales: Carmen Álvarez Lorenzo, Paola Carou Senra, María Viveiro López
 
 ## Qué es
 
