@@ -1,0 +1,184 @@
+{
+  "evaluador": "Javier",
+  "fecha_inicio": "2026-11-05T18:20:48",
+  "carpeta_audios": "C:\\Users\\jcord\\IA\\IA_cuarto\\PIIA II\\entregas\\cu-xx-voz-sintetica-asr-medico\\audios",
+  "proporcion": 0.5,
+  "semilla": 167622455,
+  "parejas_posibles": 120,
+  "parejas_seleccionadas": 60,
+  "por_idioma_y_perfil": {
+    "CASTELLANO/VOZ ADULTA": {
+      "posibles": 30,
+      "seleccionadas": 15
+    },
+    "CASTELLANO/VOZ INFANTIL": {
+      "posibles": 30,
+      "seleccionadas": 15
+    },
+    "CASTELLANO/VOZ JOVEN": {
+      "posibles": 30,
+      "seleccionadas": 15
+    },
+    "CASTELLANO/VOZ PERSONA MAYOR": {
+      "posibles": 30,
+      "seleccionadas": 15
+    }
+  },
+  "correspondencias": [
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "NOS",
+      "carpeta": "hombre",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "NOS",
+      "carpeta": "mujer",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "F1",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "F2",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "F3",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "F4",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "F5",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "M1",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "M2",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "M3",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "M4",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "CASTELLANO",
+      "modelo": "supertonic3",
+      "carpeta": "M5",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "NOS",
+      "carpeta": "hombre",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "NOS",
+      "carpeta": "mujer",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "F1",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "F2",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "F3",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "F4",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "F5",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "M1",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "M2",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "M3",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "M4",
+      "perfil": "(excluida)"
+    },
+    {
+      "idioma": "GALLEGO",
+      "modelo": "supertonic",
+      "carpeta": "M5",
+      "perfil": "(excluida)"
+    }
+  ],
+  "python": "3.13.0",
+  "sistema": "Windows-11-10.0.26200-SP0",
+  "interfaz": "votar.py (http.server)",
+  "igualado_audio": {
+    "igualado": true,
+    "nivel_objetivo_dbfs": -23.0,
+    "pico_maximo_dbfs": -1.0,
+    "umbral_voz_dbfs": -45.0,
+    "frecuencia_objetivo_hz": null,
+    "numpy": null
+  }
+}

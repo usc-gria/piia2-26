@@ -1,0 +1,2 @@
+Aqui se guardan los votos de cada sesion (votos_<nombre>_<fecha>.csv y .json).
+Para sumar los votos de otra persona, copia aqui sus ficheros votos_*.csv.
