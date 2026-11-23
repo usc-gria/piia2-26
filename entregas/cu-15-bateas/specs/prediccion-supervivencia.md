@@ -42,7 +42,18 @@ El clasificador es un gradient boosting de scikit-learn que admite valores nulos
 | Contexto de la ría | Toxinas recientes en toda la ría y porcentaje de polígonos cerrados |
 | Historial del polígono | Días en el estado actual y cierres recientes |
 | Estacionalidad | Época del año |
-| Meteorología y agua | Lluvia, viento, temperatura y salinidad de los últimos días |
+| Polígonos vecinos | Toxinas y cierres de los polígonos de la misma zona y de las zonas contiguas |
+| Otras rías | Proporción de polígonos cerrados o en alerta en las demás rías |
+| Calendario de muestreo | Día de la semana del día que se predice y días desde la última analítica |
+| Viento y temperatura por polígono | Viento (componentes norte y este, velocidad) y temperatura del aire de los últimos días |
+| Índice de afloramiento | Afloramiento frente a cabo Silleiro, calculado con el viento ERA5 |
+| Fitoplancton y nitrato | Del modelo IBI de Copernicus Marine, con un día de retraso |
+
+Al principio pensábamos usar también la meteorología y el agua de las estaciones de MeteoGalicia,
+pero solo hay en Arousa y no sirven para un modelo de tres rías. Los seis últimos grupos de la tabla
+los añadimos después; en la [ampliación de fuentes](../decisions/ampliacion-fuentes-de-datos.md)
+explicamos cómo los elegimos. Son 62 variables en total (el detalle está en la
+[arquitectura](../ARCHITECTURE.md)).
 
 ### Cómo se evalúa
 
@@ -99,4 +110,4 @@ Y usamos dos métricas a 7 días:
 | CA5 | Evaluar el modelo de cierre por años en Arousa. | El AUC a 7 días supera al de la regla simple en la mayoría de los años, y el Brier a 7 días mejora al de Kaplan-Meier en la mayoría de los años. |
 | CA6 | Dejar fuera, una a una, las rías que se puedan evaluar por separado. | Se publica el AUC a 7 días de cada ría junto al de la regla simple, y el AUC medio del modelo es superior. |
 | CA7 | Evaluar el modelo de reapertura en Arousa. | El AUC a 7 días supera al de la regla simple. |
-| CA8 | Evaluar por años el modelo completo, sin toxinas propias, sin contexto de la ría, sin meteorología ni agua, y solo con datos ambientales. | Se obtiene una tabla con el AUC a 7 días por configuración, que usa el informe de dependencia de datos. |
+| CA8 | Evaluar por años el modelo completo, sin toxinas propias, sin contexto de la ría, sin cada una de las fuentes nuevas, sin viento (meteo ni afloramiento), y solo con datos ambientales. | Se obtiene una tabla con el AUC a 7 días por configuración, que usa el informe de dependencia de datos. |

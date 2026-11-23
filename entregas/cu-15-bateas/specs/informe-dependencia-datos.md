@@ -21,7 +21,7 @@ Se compara el AUC medio del modelo completo con el del modelo sin esa fuente:
 - **Imprescindible:** el AUC medio baja 0,03 o más.
 - **Complementaria:** baja menos de 0,03. El modelo puede funcionar sin ella, aunque pierda algo de calidad.
 
-Se clasifican las toxinas propias, el contexto de la ría, y la meteorología y el agua. La configuración "solo con datos ambientales" no clasifica ninguna fuente: sirve para responder si se puede predecir sin ningún dato de toxinas.
+Se clasifican las toxinas propias, el contexto de la ría y cada una de las fuentes del modelo definitivo (vecinos, otras rías, calendario, meteo por polígono, afloramiento y fitoplancton del IBI). También se dan grupos, como "sin viento", porque algunas fuentes se cubren entre ellas. La configuración "solo con datos ambientales" no clasifica ninguna fuente: sirve para responder si se puede predecir sin ningún dato de toxinas.
 
 ## Por qué
 
@@ -34,7 +34,7 @@ Se clasifican las toxinas propias, el contexto de la ría, y la meteorología y 
 ## Restricciones
 
 - **Sin experimentos propios:** solo usa resultados de las specs 1 y 2.
-- **Sin ampliar el alcance:** puede recomendar datos para el futuro, pero el proyecto no los incorpora.
+- **No decide qué fuentes entran:** puede recomendar datos para el futuro, pero qué fuentes usa el modelo se decide como explicamos en la [ampliación de fuentes](../decisions/ampliacion-fuentes-de-datos.md).
 - **Brevedad:** el texto se limita a lo necesario para interpretar las tablas y decidir.
 
 **Supuestos:**
