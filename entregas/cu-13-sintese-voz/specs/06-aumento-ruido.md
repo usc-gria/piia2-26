@@ -1,6 +1,6 @@
 # Aumento del dataset con ruido
 
-> **Nota:** antes de implementar esta funcionalidad hay que estudiarla y comprobar si es posible llevarla a cabo.
+> **Nota:** esta funcionalidad es opcional. Antes de implementarla hay que estudiarla y comprobar si es posible llevarla a cabo. Si no lo es, el dataset de la spec 05 se entrega sin ruido.
 
 ## Qué construir
 
@@ -16,6 +16,7 @@ Un proceso que toma los audios del dataset sintético (spec 05) y les añade rui
 
 - Un audio con ruido por cada audio procesado.
 - Un fichero de metadatos con las mismas columnas que el original y, además, el efecto aplicado, el ruido usado, su intensidad y el identificador del audio original.
+- Un registro de los ruidos usados, con la fuente y la licencia de cada uno.
 
 **Funcionamiento**
 
@@ -44,4 +45,5 @@ Los modelos de síntesis producen audio muy limpio, como grabado en estudio. En 
 - Cada audio con ruido tiene la misma transcripción que su original.
 - El dataset original queda igual que antes de aplicar el proceso.
 - Los metadatos indican para cada audio el efecto, el ruido y la intensidad aplicados.
+- Cada ruido usado figura en el registro con su fuente y su licencia, y esa licencia permite este uso.
 - El dataset con ruido incluye la configuración con la que se generó.
