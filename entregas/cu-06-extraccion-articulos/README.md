@@ -75,6 +75,13 @@ Elegimos este proyecto porque responde a una necesidad real de un grupo de inves
 | Xiana Oliveira Allo | Repetición del estudio por código y elección del LLM | xiana.oliveira@rai.usc.es |
 | Eva Graña Cordeiro | Análisis de errores de ChatGPT | eva.grana.cordeiro@rai.usc.es |
 
+## Arquitectura y decisiones
+
+- [Arquitectura](ARCHITECTURE.md): diagrama del sistema, qué hace cada pieza y cómo pasan los datos de una a otra.
+- Decisiones de implementación (ADR):
+  - [Modelo de lenguaje: Qwen3 Next Instruct en Databricks](decisions/modelo-llm.md)
+  - [Cuándo cuenta un dato como acierto en el corrector](decisions/criterio-acierto.md)
+
 ## Estructura
 
 Esta entrega está en el repositorio de la asignatura:
@@ -83,12 +90,18 @@ Esta entrega está en el repositorio de la asignatura:
 entregas/
   cu-06-extraccion-articulos/
     README.md                                  este documento
+    ARCHITECTURE.md                            arquitectura: diagrama, componentes y flujo
     specs/
       extraccion-por-agentes-especialistas.md  los agentes de impresión, tinta y dosis
       interfaz-subida-y-seleccion.md           subir el artículo, elegir los datos y ver la tabla
+    decisions/
+      modelo-llm.md                            ADR 1: qué LLM usamos y por qué
+      criterio-acierto.md                      ADR 2: cuándo un dato cuenta como acierto
 ```
 
 En `specs/` hay una especificación por funcionalidad: qué se construye, por qué, con qué restricciones y cómo se comprueba que funciona.
+
+En `decisions/` hay un documento por decisión de implementación: qué se decidió, por qué, qué otras opciones había y referencias.
 
 El código está aparte, en nuestro repositorio de trabajo, `piia2-extraccion`, que es privado porque usamos datos que no se pueden publicar:
 
@@ -102,40 +115,21 @@ piia2-extraccion/
     formato_datos.md             formato común de los datos
     contexto/introduccion.md     fases y reparto
   src/piia/
-    datos/                       formato común y conversión del Excel
+    agentes/                     agentes de impresión, tinta y dosis
+    herramientas/                calculadora, densidades y buscador del diámetro
+    datos/                       formato común, conversión del Excel y unidades
     evaluacion/                  corrector automático y emparejamiento de casos
     lector_pdf/                  conversión de PDF a texto con Docling
     config_llm.py                configuración del LLM
-  scripts/                       scripts numerados (01 a 05) para ejecutar cada paso
+  scripts/                       scripts numerados para ejecutar cada paso
   tests/                         pruebas, solo con datos inventados
   data/                          datos locales: no se suben a GitHub, salvo desarrollo.txt y su README
 ```
 
-### Cómo funcionará el sistema
+### Cómo funciona el sistema
 
-```
-Artículo (PDF) + suplementario + datos elegidos
-                  |
-     Docling (convierte el PDF a texto)
-                  |
-             Orquestador
-   (decide qué agentes actúan y en qué orden)
-                  |
-   +--------------+--------------+
-   |              |              |
-Impresión       Tinta          Dosis
-   |              |              |
-   +--------------+--------------+
-                  |
-Ayudantes, solo si hacen falta:
-calculadora, buscador, lector de gráficas
-                  |
-   Revisor (unidades, rangos y citas)
-                  |
-  Tabla con cada dato y de dónde sale
-```
+El diagrama y la descripción de cada pieza están en [ARCHITECTURE.md](ARCHITECTURE.md).
 
-El corrector queda fuera de este flujo: es la herramienta con la que medimos los aciertos del sistema en cada fase.
 
 ### Fases
 
@@ -149,11 +143,13 @@ El corrector queda fuera de este flujo: es la herramienta con la que medimos los
 
 ### Estado actual
 
-Estamos en la fase 1. Ya hemos seleccionado los 20 artículos de desarrollo, convertido el Excel del estudio a un formato de trabajo común y pasado esos 20 artículos a texto con Docling. El corrector también funciona: con las respuestas de GPT-4 da 0,9355 en los 70 artículos, a un dato de la cifra de referencia de 0,9357 (validado el 24/10/2026).
+Hemos terminado la fase 1 y estamos en la fase 2:
 
-También hemos decidido cómo emparejar los casos de las expertas con los del sistema: por similitud, comparando los campos que identifican cada caso (por ejemplo, fármaco y sustrato), porque nuestro sistema no dará los casos en el orden del Excel. El código de este emparejamiento ya está escrito y lo estamos revisando.
+- El corrector funciona y está validado: con las respuestas de GPT-4 da 0,9355 en los 70 artículos, frente a la cifra de referencia de 0,9357 (24/10/2026).
+- Repetimos el estudio por código con tres LLM de Databricks y elegimos Qwen3 Next Instruct (08/11/2026; ver [ADR 1](decisions/modelo-llm.md)).
+- Ya funcionan los tres agentes (impresión, tinta y dosis), el buscador del diámetro de la boquilla y la calculadora de densidad, Oh y Z.
 
-Los siguientes pasos son repetir el estudio por código y empezar con los agentes.
+Los siguientes pasos son el orquestador, el lector de gráficas y la interfaz.
 
 ## Glosario
 
