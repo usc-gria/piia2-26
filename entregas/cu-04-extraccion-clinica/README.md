@@ -21,7 +21,7 @@ Los objetivos iniciales propuestos son:
 - Preparar la documentación de un paciente para su análisis, contemplando las dificultades de lectura de los materiales disponibles.
 - Extraer un subconjunto de variables clínicas que se acuerde con la tutora, diferenciando los valores respaldados por los documentos de la información ausente o incierta.
 - Organizar los resultados conforme a los campos, tipos, opciones y reglas pertinentes del libro de códigos de REDCap.
-- Facilitar la comprobación de los resultados mediante referencias a su procedencia documental, como propuesta del equipo pendiente de concretar en las specs.
+- Facilitar la comprobación de los resultados mediante referencias a su procedencia documental, descritas en las tres specs y en la arquitectura.
 
 ## Punto de partida confirmado
 
@@ -33,9 +33,9 @@ Según la información de la primera reunión, el contexto facilitado al equipo 
 - Cada entrada al sistema corresponde a **un único paciente**. Se han contemplado PDF, DOCX, texto copiado desde el portapapeles y carpetas con varios documentos como posibles entradas; esto no confirma que todos esos formatos deban admitirse inicialmente.
 - Se dispone de un libro de códigos de REDCap que describe campos, tipos, opciones y reglas. La tutora ha indicado que **no es necesario extraer todas sus variables** y que el subconjunto prioritario se facilitará posteriormente.
 
-Los PDF originales son material de consulta local en `data/`, excluido mediante `.gitignore`, y no forman parte de la entrega. No se incluirán historias clínicas ni datos de pacientes, tampoco en ejemplos, capturas o resultados de pruebas. La exclusión no elimina archivos que ya estén versionados ni copias conservadas en referencias internas de Git; antes de publicar debe comprobarse el contenido de los commits que se vayan a entregar.
+Los originales y sus derivados se conservan en el entorno autorizado. La entrega recoge observaciones generales y métricas agregadas. Los escenarios de aceptación emplean documentos, valores y definiciones de campos ficticios.
 
-Las observaciones documentales y sus páginas de referencia se recogen en DOC-001 y CLI-001; los campos y códigos contrastados con el libro real, en RCP-001. Los casos de prueba utilizan contenido ficticio y distinguen el diccionario sintético de los ejemplos basados en definiciones verificadas. Ninguno de estos ejemplos determina las variables prioritarias del proyecto.
+DOC-001 y CLI-001 resumen las observaciones documentales que motivan sus requisitos. RCP-001 utiliza un diccionario sintético para comprobar los comportamientos de preparación. Las variables prioritarias y sus correspondencias siguen pendientes de acuerdo con la entidad.
 
 ## Alcance inicial propuesto
 
@@ -44,10 +44,10 @@ Esta delimitación es una propuesta del equipo para orientar las especificacione
 ### Incluido en la propuesta
 
 - Ingesta de documentación de un único paciente por entrada, limitada inicialmente a PDF. Este alcance propuesto todavía no cubre toda la información que actualmente requiere copia y pegado manual. El posible conjunto de documentos de una entrada debe pertenecer a ese mismo paciente.
-- Preparación del contenido digital y escaneado para su análisis, con identificación de las partes que no puedan leerse o interpretarse. La cobertura de manuscritos e idiomas deberá concretarse a partir de los ejemplos y su viabilidad.
+- Preparación del contenido digital y escaneado para su análisis. DOC-001 describe cómo conservar el idioma original y señalar las limitaciones de lectura. La cobertura exigida de idiomas y manuscritos queda pendiente de evaluación y acuerdo con la entidad.
 - Extracción del subconjunto de variables que se acuerde, considerando el contexto clínico y temporal para evitar confundir datos históricos con actuales o tratar las repeticiones como hechos nuevos.
 - Identificación de información ausente, ambigua, contradictoria o ilegible, sin completar valores mediante suposiciones. La resolución de contradicciones queda pendiente de acordar.
-- Estructuración de los resultados según el subconjunto aplicable del libro de códigos y preparación de una salida intermedia para su comprobación. Su formato y su incorporación final a REDCap están pendientes de validación.
+- Estructuración de los resultados según el subconjunto aplicable del libro de códigos y preparación de una salida intermedia para su comprobación. El ADR de formato intermedio propone Pydantic v2 y JSON para los contratos internos. El formato y el mecanismo de incorporación a REDCap quedan pendientes de acuerdo con la entidad.
 
 ### Fuera de la propuesta inicial
 
@@ -76,7 +76,7 @@ Las aclaraciones de la tutora concretan la exportación desde IANUS y mantienen 
 
 ## Funcionalidades previstas
 
-La división en tres áreas es provisional. Los identificadores permiten relacionar el alcance con las futuras specs sin fijar una arquitectura, un modelo de IA, un proveedor ni herramientas concretas.
+La división en tres áreas relaciona el alcance con las tres specs funcionales. La propuesta técnica se desarrolla en la arquitectura y los ADR.
 
 | Identificador | Funcionalidad e intención | Especificación |
 |---|---|---|
@@ -102,23 +102,12 @@ Los cuatro estudiantes participan como integrantes del equipo de desarrollo. Sus
 
 El proyecto sigue un desarrollo guiado por especificaciones (*spec-driven development*): este README define la visión y el alcance, y las specs concretan cada funcionalidad como referencia para su implementación y verificación.
 
-La carpeta de entrega se organiza de la siguiente forma:
+- [ARCHITECTURE.md](ARCHITECTURE.md) describe el diagrama, los componentes, los contratos y el recorrido de un caso sintético, incluidos los fallos parciales. La arquitectura está redactada y revisada técnicamente. El visto bueno formal del equipo sobre la versión consolidada sigue pendiente.
+- La [estrategia de lectura de PDF](decisions/estrategia-lectura-pdf.md) resume la comparación de lectura digital y OCR. El ADR de [formato intermedio](decisions/formato-intermedio.md) justifica Pydantic v2, JSON y los validadores propios. El ADR de [extracción clínica](decisions/extraccion-clinica.md) compara familias de motor y propone un suelo de referencia basado en reglas. Los tres ADR incluyen ejemplos sintéticos, resultados y límites de la evidencia. La revisión cruzada entre la arquitectura y el ADR de formato intermedio está registrada. La aprobación formal de las propuestas técnicas sigue pendiente de constancia.
+- `specs/`: definiciones funcionales de `DOC-001`, `CLI-001` y `RCP-001`, respectivamente. El nombre `exportacion-redcap.md` no presupone integración directa con REDCap.
 
-```text
-entregas/cu-04-extraccion-clinica/
-├── .gitignore
-├── README.md
-├── data/                         # Consulta local; excluida de la entrega
-└── specs/
-    ├── ingesta-documentos.md
-    ├── extraccion-datos-clinicos.md
-    └── exportacion-redcap.md
-```
+La Entrega 2 se ha presentado mediante una pull request al repositorio docente, con ocho documentos en `entregas/cu-04-extraccion-clinica/`. La evidencia experimental se explica en los ADR. Los originales, transcripciones, capturas, registros y exportaciones de depuración de ejecuciones clínicas se mantienen dentro del entorno autorizado. La evidencia experimental se explica en los ADR. Los originales, transcripciones, capturas, registros y exportaciones de depuración de ejecuciones clínicas se mantienen dentro del entorno autorizado.
 
-- `README.md`: presentación, motivación, objetivos, alcance, funcionalidades, cuestiones pendientes, equipo y organización de la entrega.
-- `.gitignore`: excluye `data/`, donde se consultan los PDF originales sin incorporarlos a la entrega pública.
-- `specs/`: reúne las definiciones funcionales de `DOC-001`, `CLI-001` y `RCP-001`, respectivamente, según la tabla anterior. El nombre `exportacion-redcap.md` no presupone una integración directa con REDCap.
+Cada spec describe intención, comportamiento, restricciones, supuestos y criterios de aceptación observables y comprobables. Las métricas y los umbrales de rendimiento quedan pendientes de acuerdo, según la tabla de validaciones. Los acuerdos con la tutora deben reflejarse de forma coherente en el alcance, la arquitectura y las specs afectadas.
 
-Cada spec debe describir su intención, comportamiento, restricciones y supuestos, y establecer criterios de aceptación observables y comprobables. Las métricas y los umbrales de rendimiento quedan pendientes de acuerdo, según la tabla de validaciones. Los acuerdos con la tutora deben reflejarse de forma coherente en el alcance y las specs afectadas.
-
-La referencia de evaluación es [Entrega 1 — Definición del proyecto](../../evaluacion/entrega-1.md), que exige el README y al menos dos specs con la definición funcional y los criterios de aceptación de sus respectivas funcionalidades.
+Referencias de evaluación: [Entrega 1](https://github.com/usc-gria/piia2-26/blob/main/evaluacion/entrega-1.md) y [Entrega 2](https://github.com/usc-gria/piia2-26/blob/main/evaluacion/entrega-2.md).

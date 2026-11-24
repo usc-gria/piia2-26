@@ -10,7 +10,7 @@
 | Entrada documental | Representación intermedia de [DOC-001](ingesta-documentos.md), incluidas sus incidencias y limitaciones. |
 | Destino funcional | Preparación posterior de resultados por RCP-001, sin anticipar su codificación en REDCap. |
 | Marco de alcance | [README del proyecto](../README.md) |
-| Referencia de evaluación | [Entrega 1](../../../evaluacion/entrega-1.md) |
+| Referencia de evaluación | [Entrega 1](https://github.com/usc-gria/piia2-26/blob/main/evaluacion/entrega-1.md) |
 
 Esta spec define la **propuesta funcional del equipo**. Las obligaciones descritas constituyen el contrato propuesto para su implementación, no decisiones clínicas ya validadas por Ceres Fernández Rozadilla. El subconjunto de variables, sus definiciones temporales y los protocolos de resolución de discrepancias siguen pendientes de confirmación.
 

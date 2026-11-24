@@ -10,7 +10,7 @@
 | Entrada clínica | Resultados de [CLI-001](extraccion-datos-clinicos.md), con sus estados, contextos y evidencias procedentes de [DOC-001](ingesta-documentos.md). |
 | Resultado inicial propuesto | Representación intermedia con valores preparados, incidencias y decisiones de incorporación pendientes. |
 | Marco de alcance | [README del proyecto](../README.md) |
-| Referencia de evaluación | [Entrega 1](../../../evaluacion/entrega-1.md) |
+| Referencia de evaluación | [Entrega 1](https://github.com/usc-gria/piia2-26/blob/main/evaluacion/entrega-1.md) |
 
 Esta spec define la **propuesta funcional del equipo**. Las obligaciones descritas no constituyen decisiones ya confirmadas por Ceres Fernández Rozadilla. «Compatible» significa conforme a las definiciones y reglas suministradas para los campos seleccionados; no acredita por sí solo validez clínica, aprobación humana ni aceptación por una operación real de importación.
 

@@ -9,7 +9,7 @@
 | Propósito | Recibir documentación de un único paciente y producir contenido procesable con referencias de procedencia y limitaciones de lectura. |
 | Consumidor del resultado | `CLI-001`, extracción e interpretación de información clínica. |
 | Marco de alcance | [README del proyecto](../README.md) |
-| Referencia de evaluación | [Entrega 1](../../../evaluacion/entrega-1.md) |
+| Referencia de evaluación | [Entrega 1](https://github.com/usc-gria/piia2-26/blob/main/evaluacion/entrega-1.md) |
 
 Esta spec desarrolla la **propuesta funcional del equipo**, pendiente de validación con la entidad. Las obligaciones expresadas como «debe» definen el comportamiento propuesto para su implementación y aceptación; no representan decisiones ya confirmadas por Ceres Fernández Rozadilla. La sección 6 distingue los hechos confirmados de las propuestas y los supuestos.
 
