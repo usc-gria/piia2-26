@@ -8,9 +8,9 @@ Este proyecto desarrolla un framework para **automatizar la validación de la ro
 
 ## 2. Motivación
 
-La integración de aeronaves no tripuladas en el espacio aéreo compartido no es seguro, por lo que se necesitan sistemas DAA que detecten aeronaves de ala fija (avionetas, ultraligeros). Validar estos sistemas en el mundo real tiene unas barreras importantes:
+La integración de aeronaves no tripuladas en el espacio aéreo compartido no es segura, por lo que se necesitan sistemas DAA que detecten aeronaves de ala fija (avionetas, ultraligeros). Validar estos sistemas en el mundo real tiene unas barreras importantes:
 - **Coste y logística**: El despliegue de las aeronaves para campañas de vuelo resultan muy costosas, debido al combustible, alquiler de las aeronaves y los permisos correspondientes.
-- **Riesgo operativo**: Simular trayectorias extremas para que los sistemas DAA sean capaces de detectar todas las situaciones posibles puede suponer un riesgo para las aeronaves. Estes riesgos son volar en condiciones meteorológicas extremas (mucha lluvia o niebla) o simular situaciones en las que la aeronave está muy cerca.
+- **Riesgo operativo**: Simular trayectorias extremas para que los sistemas DAA sean capaces de detectar todas las situaciones posibles puede suponer un riesgo para las aeronaves. Estos riesgos son volar en condiciones meteorológicas extremas (mucha lluvia o niebla) o simular situaciones en las que la aeronave está muy cerca.
 
 La idea es dejar de hacer pruebas a mano y usar un sistema automático que aprende de los resultados y puede repetir exactamente el mismo ensayo una y otra vez.
 
@@ -24,7 +24,7 @@ Para garantizar el foco y la viabilidad técnica, los límites del proyecto qued
 - **Modelado paramétrico y renderizado 3D**: generación de escenas fotorrealistas en Blender mediante scripts de Python, parametrizando la posición y distancia relativa de la aeronave respecto al dron (para simular trayectorias de aproximación frontal o de cruce), meteorología (niebla, lluvia, iluminación solar).
 - **Etiquetado automático**: extracción de las bounding boxes en formato COCO derivado directamente del escenario de Blender, eliminando el error humano del etiquetado manual.
 - **Planificación de pruebas con LLM**: Uso de un modelo de lenguaje que crea archivos de configuración (en formato JSON) con las órdenes y valores exactos que debe simular Blender.
-- **Exploración adaptativa (bucle cerrado)**: lógica de retroalimentación que analiza el desempeño del detector y analiza dónde emoieza a fallar. Ante esto genera automáticamente más ensayos en esas situaciones críticas para encontrar su límite exacto.
+- **Exploración adaptativa (bucle cerrado)**: lógica de retroalimentación que analiza el desempeño del detector y analiza dónde empieza a fallar. Ante esto genera automáticamente más ensayos en esas situaciones críticas para encontrar su límite exacto.
 - **Evaluación y trazabilidad**: integración con el modelo detector provisto por Gradiant (YOLO-X) y generación automatizada de informes técnicos de robustez, detallando los resultados y los puntos débiles encontrados.
 
 
@@ -55,6 +55,10 @@ A continuación se detalla la organización de los directorios y archivos del pr
 ```text
 entregas/cu-17-validacion-daa-llm/
 ├── README.md      # Visión general, motivación y alcance del proyecto
-└── specs/
+├── ARCHITECTURE.md      # Arquitectura de la solución
+├── specs/
     ├── motor-simulacion-blender.md   # Spec 1: Motor de simulación en Blender
     └── generador-informe-robustez.md    # Spec 2: Planificador adaptativo LLM, evaluación e informes
+└── decisions/
+    ├── json-por-imagen.md   # ADR 1: un JSON por imagen, con formato de campos común y fijo
+    └── archivos-blend-separados.md   # ADR 2: un .blend por escena controlado por un único script
