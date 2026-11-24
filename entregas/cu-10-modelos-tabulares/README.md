@@ -4,7 +4,7 @@
 
 El objetivo es construir un prototipo interactivo con Streamlit para explorar y comparar modelos fundacionales tabulares en problemas industriales de clasificación binaria. La herramienta permitirá seleccionar un dataset de los facilitados para el proyecto, ejecutar los modelos disponibles y contrastar sus resultados con los baselines tradicionales proporcionados. Está dirigida a estudiantes y analistas que necesiten evaluar estos enfoques desde una interfaz común, sin reescribir el flujo de experimentación para cada caso.
 
-Comenzamos usando distintos datasets para probar y comparar LightGBM, como baseline tradicional, y TabPFN, como modelo fundacional. También utilizamos MLflow para registrar las ejecuciones y comparar sus métricas y tiempos. Esta fase es un ensayo para aprender el flujo de trabajo; no representa por sí sola el alcance final, que contempla los distintos datasets incorporados al proyecto.
+A partir de los ensayos con LightGBM, como baseline tradicional, y TabPFN, como modelo fundacional, disponemos de un pipeline común, baterías de experimentos, seguimiento local con MLflow y una interfaz Streamlit. La implementación actual trabaja con Framingham, Telco Customer Churn y Default of Credit Card Clients. Estos datasets permiten desarrollar y comprobar el flujo; no sustituyen los casos industriales y baselines que se incorporen al proyecto.
 
 ## Motivación
 
@@ -49,11 +49,15 @@ Los tres integrantes comparten las responsabilidades de preparación de datos, e
 ## Estructura de esta entrega
 
 - [README.md](./README.md): visión del proyecto, motivación, alcance, equipo y organización de la entrega.
+- [ARCHITECTURE.md](./ARCHITECTURE.md): diagrama, componentes, flujo de datos y correspondencia con las specs, distinguiendo la implementación actual de los requisitos pendientes.
 - [specs/](./specs/): definiciones funcionales y criterios de aceptación de las funcionalidades del prototipo.
   - [comparar-modelos.md](./specs/comparar-modelos.md): selección de datasets y modelos y ejecución de experimentos con un protocolo de evaluación común.
   - [consultar-resultados.md](./specs/consultar-resultados.md): consulta e interpretación de resultados frente a baselines tradicionales y requisitos del informe comparativo.
+- [decisions/](./decisions/): decisiones de implementación y su justificación.
+  - [evaluacion-pareada.md](./decisions/evaluacion-pareada.md): particiones compartidas y selección de hiperparámetros y umbral sin utilizar el test.
+  - [seguimiento-mlflow.md](./decisions/seguimiento-mlflow.md): registro local de baterías y ejecuciones mediante MLflow, SQLite y artefactos en disco.
 
-Esta entrega contiene la definición del proyecto. La implementación del prototipo y el informe de resultados se desarrollarán en fases posteriores.
+Esta carpeta reúne la documentación de las entregas 1 y 2. Se conservan las specs de la primera entrega y se incorporan la arquitectura y dos ADR basados en la [implementación de Modelos_Fundacionales](https://github.com/RodrigoRego5/Modelos_Fundacionales/tree/e6e52c4ede57066659d9ee31b637c63640c7bd52). El informe final de resultados sigue siendo un entregable posterior; las gráficas experimentales existentes no lo sustituyen.
 
 ## Ensayo inicial
 
