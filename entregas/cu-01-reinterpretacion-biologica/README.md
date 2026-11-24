@@ -82,13 +82,15 @@ Para garantizar la entrega en plazo y la robustez del sistema, el proyecto sigue
 
 - **Interfaz web (Fase 4):** para ejecutar una ruta entera desde el navegador y leer el resultado explicado: veredicto
   de la ruta, qué aportó cada fase y, por gen, sus artículos con la cita y el peso de cada voto. Una persona experta puede
-  corregir en pantalla el signo de un gen sin que se guarde, y un Excel de resultados acumula las rutas ejecutadas
-  ([instrucciones](codigo/fase4_frontend/instrucciones_uso_frontend.md)).
+  corregir en pantalla el signo de un gen («Tu criterio»), que pasa al Excel de la Fase 3 y al Excel de resultados junto
+  al resultado automático; ese Excel acumula las rutas ejecutadas. Las claves del LLM se gestionan desde la propia
+  interfaz (⚙ → token-api). Se reparte también como programa de Windows con instalador, sin Python ni Node
+  ([ADR-006](decisions/adr-006-programa-de-escritorio.md); [instrucciones](codigo/fase4_frontend/instrucciones_uso_frontend.md)).
 
 - **Reproducibilidad:**
   - registro de todas las respuestas de los modelos, que permite reanudar una ejecución y regenerar los resultados sin volver a llamar ([ADR-004](decisions/adr-004-persistencia-ficheros-locales.md));
   - un cliente simulado (`ClienteSimulado`) que permite probar el pipeline sin red ni cuotas;
-  - pruebas con `pytest` en `codigo/tests/` (limpieza, validación, contraste, ejecución reanudable, ingesta y scoring), sin red: las APIs y los modelos se simulan.
+  - pruebas con `pytest` en `codigo/tests/` (limpieza, validación, contraste, ejecución reanudable, ingesta, scoring, puente de la interfaz y lógica de la interfaz con node), sin red: las APIs y los modelos se simulan.
 
 ### Qué queda explícitamente fuera
 
@@ -182,7 +184,8 @@ entregas/cu-01-reinterpretacion-biologica/
     ├── fase2_inferencia/              # Fase 2: casos, prompts, cliente LLM, registro, validación y contraste.
     ├── fase3_scoring/                 # Fase 3: signo de cada par (gen, ruta) y Net Pathway Score de cada ruta.
     ├── fase4_frontend/                # Fase 4: interfaz web (React + Vite) que ejecuta una ruta entera (Fases 1-3) a través de un puente HTTP local
-    │                                  #   (api_puente.py), con criterio experto y Excel de resultados que acumula las rutas.
+    │                                  #   (api_puente.py), con criterio experto, Excel de resultados que acumula las rutas y claves del LLM (token-api).
+    ├── empaquetado/                   # Programa de escritorio para Windows e instalador (ADR-006); la salida (empaquetado/salida/) no se versiona.
     ├── evaluacion/                    # Benchmark: selección del gold set, guía de etiquetado, etiquetas e informes.
     ├── tests/                         # Pruebas con pytest, sin red (python -m pytest desde codigo/).
     ├── tools_cimus/                   # Material de CIMUS: rutas enriquecidas (entrada de la Fase 1) y tabla de log2FC (sensibilidad de la Fase 3).
@@ -198,11 +201,11 @@ El fichero `.gitignore` está en esta carpeta y excluye el entorno virtual, `cod
 
 Desde esta carpeta (`entregas/cu-01-reinterpretacion-biologica/`), con Python 3 y las dependencias de `codigo/requirements.txt`:
 
-1. **Claves:** copiar `codigo/.env.example` como `codigo/.env` y rellenar `GEMINI_API_KEY`, `GROQ_API_KEY` y, para la Fase 1, `NCBI_EMAIL` y `NCBI_API_KEY` (opcional). `codigo/.env` no se sube al repositorio: está en el `.gitignore`. Las variables de entorno del sistema tienen prioridad sobre el fichero.
+1. **Claves:** copiar `codigo/.env.example` como `codigo/.env` y rellenar `GEMINI_API_KEY`, `GROQ_API_KEY` y, para la Fase 1, `NCBI_EMAIL` y `NCBI_API_KEY` (opcional). `codigo/.env` no se sube al repositorio: está en el `.gitignore`. Las variables de entorno del sistema tienen prioridad sobre el fichero. Cada clave del LLM admite varias separadas por comas (si una se queda sin cupo, se pasa a la siguiente), y la interfaz web las gestiona en ⚙ → token-api.
 2. **Fase 1:** `python codigo/fase1_ingesta/main.py`. Lee los Excels de CIMUS (`codigo/tools_cimus/NK_rutas_activadas_GO.xlsx` y `NK_rutas_suprimidas_GO.xlsx`) y escribe `codigo/fase1_ingesta/fase1_dataset_abstracts.xlsx`. Con el Excel completo, la primera ejecución descarga el OBO, el GAF y unos 33.900 _abstracts_ (casi una hora); con las cachés tarda unos minutos. Con una sola ruta, el recorrido completo de las tres fases tarda unos 2,4 min ([`docs/kpis.md`](docs/kpis.md)).
 3. **Fase 2:** desde `codigo/`, `python -m fase2_inferencia ejecutar`. Escribe `codigo/data/fase2_resultados.xlsx`. Si se agota el límite diario de un modelo, basta con volver a lanzar el mismo comando. Sin llamar a ningún modelo, `python -m fase2_inferencia CD7` muestra la primera llamada que se enviaría para un gen.
 4. **Fase 3:** desde `codigo/`, `python -m fase3_scoring`. Lee las salidas de las Fases 1 y 2 y escribe `codigo/data/fase3_scoring.xlsx` en unos segundos, sin red. Si existe `codigo/tools_cimus/NK_cells_DESeq2_results.xlsx`, lo usa solo para la sensibilidad (`NPS_log2FC`); un tercer argumento cambia ese fichero, o `ninguno` lo omite.
-5. **Fase 4 (interfaz web):** desde `codigo/`, `python fase4_frontend/api_puente.py` (puente con las fases); y desde `codigo/fase4_frontend/`, `npm install` la primera vez y `npm run dev`, que abre la interfaz en `http://localhost:5173/`. Allí se suben los Excels de rutas, se elige una ruta y se ejecuta entera ([instrucciones](codigo/fase4_frontend/instrucciones_uso_frontend.md)).
+5. **Fase 4 (interfaz web):** desde `codigo/`, `python fase4_frontend/api_puente.py` (puente con las fases); y desde `codigo/fase4_frontend/`, `npm install` la primera vez y `npm run dev`, que abre la interfaz en `http://localhost:5173/`. Allí se suben los Excels de rutas, se elige una ruta y se ejecuta entera ([instrucciones](codigo/fase4_frontend/instrucciones_uso_frontend.md)). Para quien no use la terminal hay un programa de Windows con instalador: desde `codigo/`, `python empaquetado/construir.py` genera `Instalar CU-01 PathScore Studio.exe`, que no necesita Python ni Node ([ADR-006](decisions/adr-006-programa-de-escritorio.md)).
 6. **Benchmark:** desde `codigo/`, `python evaluacion/evaluar_gold.py`, con el uso descrito en la [spec del benchmark](specs/benchmark-gold-set.md).
-7. **Pruebas:** desde `codigo/`, `python -m pytest`. No usan la red ni las claves de `.env`.
+7. **Pruebas:** desde `codigo/`, `python -m pytest`. No usan la red ni las claves de `.env`. Las de la lógica de la interfaz (TypeScript) las lanza también, con node; sin node, se saltan.
 
