@@ -68,18 +68,27 @@ El análisis de enriquecimiento de rutas biológicas mediante GSEA genera una gr
 ```text
 entregas/
 └── cu-02-analisis-poblaciones-celulares/
-    ├── README.md                  # Documento principal: qué es el proyecto, motivación, alcance y equipo.
-    ├── specs/                     # Especificaciones detalladas por funcionalidad
-    │   ├── frontend.md       # Especificación del prototipo de interfaz y visualización
+    ├── README.md                        # Documento principal: qué es el proyecto, motivación, alcance y equipo.
+    ├── ARCHITECTURE.md                  # Arquitectura de la solución: diagrama, componentes y flujos de datos.
+    ├── specs/                           # Especificaciones detalladas por funcionalidad
+    │   ├── frontend.md                  # Especificación del prototipo de interfaz y visualización
     │   ├── analisis-datos-gsea.md       # Especificación del análisis de datos de GSEA
-    │   └── modulo-explicacion.md    # Especificación del módulo de explicación en lenguaje natural
-    ├── prototipo_frontend.html    # Prototipo en HTML para la interfaz web
-    └── .gitignore                 # Archivos y carpetas omitidos por el control de versiones (datos sensibles, modelos, etc.)
+    │   └── modulo-explicacion.md        # Especificación del módulo de explicación en lenguaje natural
+    ├── decisions/                       # ADRs: decisiones de implementación (qué, por qué, alternativas y referencias)
+    │   ├── framework-llm.md             # LangChain y LangGraph para orquestar el LLM (generación, verificación y corrección)
+    │   ├── div-frontend-backend.md      # Frontend web + backend FastAPI local en una ventana de escritorio (pywebview)
+    │   ├── providers-llm.md             # Gemini y Groq como proveedores de LLM, modelos permitidos y límites gratuitos
+    │   └── modelo-almacenamiento.md     # SQLite como almacenamiento local, con las filas originales para remapear columnas
+    ├── prototipo_frontend.html          # Prototipo en HTML para la interfaz web
+    └── .gitignore                       # Archivos y carpetas omitidos por el control de versiones (datos sensibles, modelos, etc.)
 ```
+
 
 ### Descripción de directorios clave:
 
 * **`README.md`**: Punto de entrada al proyecto donde se describe la visión general, contexto del CIMUS, alcance y datos del equipo.
+
+* **[`ARCHITECTURE.md`](ARCHITECTURE.md)**: Describe la arquitectura de la solución: diagrama de componentes, responsabilidad de cada uno y flujos de información de principio a fin.
 
 * **`specs/`**: Contiene la documentación funcional y técnica detallada por cada módulo del sistema:
 
@@ -88,5 +97,15 @@ entregas/
   * `analisis-datos-gsea.md`: Detalla los pipelines de datos GSEA, procesamiento y algoritmos utilizados en el análisis.
 
   * `modulo-explicacion.md`: Define el enfoque para traducir los descubrimientos del análisis en lenguaje natural.
+
+* **`decisions/`**: Registros de decisiones de arquitectura (ADRs). Cada fichero documenta una decisión de implementación: qué se decidió, por qué, qué alternativas se descartaron y referencias útiles:
+
+  * [`framework-llm.md`](decisions/framework-llm.md): Uso de LangChain y LangGraph para orquestar la generación, verificación y corrección de explicaciones.
+
+  * [`div-frontend-backend.md`](decisions/div-frontend-backend.md): División en frontend web y backend FastAPI local, mostrados como app de escritorio con pywebview.
+
+  * [`providers-llm.md`](decisions/providers-llm.md): Gemini y Groq como proveedores de LLM, modelos permitidos y límites de uso gratuito.
+
+  * [`modelo-almacenamiento.md`](decisions/modelo-almacenamiento.md): SQLite como almacenamiento local y conservación de las filas originales para poder remapear columnas.
 
 * **`prototipo_frontend.html`**: Archivo HTML que contiene un prototipo navegable desarrollado para la demostración visual de la interfaz del sistema.
