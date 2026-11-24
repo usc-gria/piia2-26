@@ -1,19 +1,28 @@
 # CU-03 — Extracción y estructuración de información clínica en español mediante PLN
 
-## ¿Qué es el proyecto?
+## ¿Qué es este proyecto?
 
-En este proyecto se propone definir un prototipo de Procesamiento del Lenguaje Natural (PLN) que lea textos clínicos en español, principalmente casos publicados y ejemplos sintéticos, y los transforme en datos estructurados. El flujo previsto extraerá menciones clínicas (enfermedades, síntomas, fármacos, procedimientos, ...), intentará normalizarlas con terminologías de referencia cuando haya correspondencia justificable y generará JSON; contempla además una representación inicial en recursos HL7 FHIR. En esta entrega se especifican esas funcionalidades, pero todavía no se implementan.
+Este repositorio desarrolla un prototipo de procesamiento del lenguaje natural para textos clínicos en español. La idea principal es transformar un texto clínico libre en datos estructurados, evaluables y reutilizables en distintos flujos de análisis.
 
-El caso de uso responde a que una parte importante de la información clínica se expresa en texto libre, lo que dificulta su consulta, análisis y explotación estadística. El proyecto busca facilitar el análisis posterior, la investigación biomédica y la interoperabilidad con sistemas de información sanitaria, no sustituir el criterio de profesionales sanitarios.
+El proyecto aborda tres piezas clave del caso de uso:
 
+1. detectar entidades clínicas relevantes en texto libre,
+2. normalizarlas a terminologías de referencia cuando existe una correspondencia defendible,
+3. generar una salida estructurada en JSON y una representación inicial compatible con HL7 FHIR.
 
-##  Motivación y objetivos
+La solución se diseña como un pipeline modular con etapas claramente diferenciadas: ingest del corpus, extracción, normalización, validación JSON, evaluación y visualización.
+
+La arquitectura general se describe en [ARCHITECTURE.md](ARCHITECTURE.md), y las decisiones de implementación se documentan en [decisions](decisions/). La parte funcional del proyecto está implementada dentro de [app](app/), con una guía operativa específica en [app/README.md](app/README.md).
+
+---
+
+## Motivación y objetivos
 
 Como equipo, este caso nos ha llamado la atención por conectar con la inteligencia artificial y el PLN con una necesidad real concreta del ámbito sanitario. Responde al problema de que parte de la información clínica está en texto libre y resulta difícil de consultar y reutilizar. Este proyecto permite estudiar, de forma reproducible, las etapas necesarias para pasar de una frase clínica a un registro que pueda ser procesado por una base de datos.
 
 En la primera reunión se nos recomendó comenzar por el tratamiento de fármacos, mas el equipo prevé una posible ampliación posterior del reconocimiento a enfermedades, síntomas/signos y procedimientos. El SERGAS aborda una necesidad relacionada mediante IANUS, que organiza la información por problemas de salud. Además, los corpus clínicos en español publicados para investigación permiten definir una evaluación sin usar historias clínicas reales.
 
-El objetivo del proyecto es especificar, y en fases posteriores construir, un pipeline que:
+El objetivo del proyecto es especificar y evidenciar, con una implementación funcional mínima viable, un pipeline que:
 
 1. Reciba textos clínicos en español.
 2. Detecte y clasifique entidades clínicas previstas.
@@ -28,26 +37,37 @@ La primera fase de implementación priorizará fármacos con PharmaCoNER. La inc
 
 El camino óptimo es: **fármacos → detección → normalización → JSON → métricas**. Como la normalización es la parte de mayor riesgo se abordará pronto, priorizando una normalización sencilla y funcional, antes que una buena salida FHIR que carezca de normalización. Tanto esta como las entidades adicionales serían posibles ampliaciones.
 
-El enfoque técnico (modelos preentrenados, reglas, ajuste de modelos o comparación de alternativas) queda por decidir. La decisión se tomará tras inspeccionar los corpus, sus anotaciones, las licencias y los recursos disponibles, y se documentará antes de la implementación.
+### Prioridades de desarrollo
+
+El desarrollo se organiza en dos niveles:
+
+- **Núcleo obligatorio:** procesamiento de menciones de fármacos de principio a fin, incluyendo detección de entidades, normalización terminológica, generación de JSON y evaluación mediante métricas.
+- **Ampliaciones:** incorporación de otras categorías clínicas y conversión de la salida JSON a FHIR.
+
+El núcleo de fármacos tiene prioridad sobre las ampliaciones. Si el tiempo disponible es limitado, se reducirá primero el alcance de FHIR y de las categorías adicionales, sin comprometer la implementación y evaluación del flujo principal.
+
+Tras inspeccionar el corpus, sus anotaciones, las licencias y los recursos disponibles, la extracción de fármacos de la primera fase se basa en un diccionario y reglas. La decisión, las alternativas consideradas (modelos NER aprendidos, modelos de lenguaje) y sus limitaciones, en particular el techo de recall impuesto por la cobertura del diccionario, se documentan en [decisions/ner-diccionario-reglas.md](decisions/ner-diccionario-reglas.md).
 
 
 ## Alcance
 
-### Definido en el proyecto
+### Incluido en el proyecto
 
 - Procesamiento de textos clínicos en español procedentes de corpus públicos permitidos.
-- Inicio de la extracción con fármacos mediante el corpus PharmaCoNER; ampliación prevista a enfermedades, síntomas/signos y procedimientos con DisTEMIST, SympTEMIST y MedProcNER, si sus datos son compatibles.
+- Extracción de fármacos en la primera fase mediante el corpus PharmaCoNER.
+- Detección de proteínas y genes de PharmaCoNER como categoría propia (`protein`), sin normalización ni conversión a FHIR, como se especifica en [decisions/proteinas-categoria-propia.md](decisions/proteinas-categoria-propia.md).
 - Detección de menciones y clasificación por tipo de entidad.
 - Conservación del texto original de cada mención y de sus posiciones en el texto cuando el método y el corpus lo permitan.
 - Normalización a SNOMED CT o CIE-10-ES cuando se disponga de recursos de referencia y la correspondencia sea inequívoca. Las entidades ambiguas o sin correspondencia podrán quedar sin código.
 - Generación de JSON homogéneo, validable y con un esquema documentado.
-- Especificación de una salida FHIR inicial para los tipos de información que puedan mapearse y validarse. No se presupone representar todo el contenido del texto como un recurso FHIR.
+- Especificación de una salida FHIR inicial para los tipos de información que puedan mapearse y validarse. La conversión todavía no está implementada y no se presupone representar todo el contenido del texto como un recurso FHIR.
 - Evaluación con datos anotados, separando el conjunto de prueba de los datos usados para desarrollar o ajustar el sistema.
 - Ejecución local y documentación de configuración, dependencias, versiones y limitaciones.
 
 ### Fuera del alcance
 
-- Abordaje del resto de entidades (enfermedades, síntomas/signos y procedimientos).
+- Enfermedades, síntomas/signos y procedimientos en la primera fase. Se abordarán como ampliación posterior con DisTEMIST, SympTEMIST y MedProcNER solo si sus corpus resultan compatibles y disponibles; su ausencia no impide completar el núcleo del proyecto.
+- Conversión completa a FHIR y soporte completo de la categoría `protein` en el esquema y el pipeline. Ambas quedan documentadas como ampliaciones pendientes de implementación.
 - Uso de historias clínicas reales o de datos personales de pacientes.
 - Diagnóstico, recomendación terapéutica o toma de decisiones clínicas.
 - Integración con IANUS, sistemas del SERGAS u otros sistemas de producción.
@@ -71,7 +91,7 @@ Se priorizarán corpus públicos escritos en español, comprobando sus condicion
 - [PlanTL-GOB-ES](https://huggingface.co/PlanTL-GOB-ES): corpus y modelos
 - [SPACCC](https://github.com/PlanTL-GOB-ES/SPACCC): corpus base de casos clínicos en español del que se derivan varios recursos
 - [PharmaCoNER](https://huggingface.co/datasets/PlanTL-GOB-ES/pharmaconer): fármacos y proteínas
-- [DisTEMIST](https://temu.bsc.es/distemist): enfermedades 
+- [DisTEMIST](https://temu.bsc.es/distemist): enfermedades
 - [MedProcNER](https://zenodo.org/records/8224056): procedimientos
 - [SympTEMIST](https://zenodo.org/records/10635215): síntomas y signos
 - [CodiEsp](https://temu.bsc.es/codiesp/): codificación CIE-10
@@ -80,8 +100,8 @@ Como referencias terminológicas se considerarán SNOMED CT y CIE-10-ES, siempre
 - [SNOMED CT](https://www.snomed.org/): terminología clínica que incorpora IANUS
 - CIE-10-ES: recursos oficiales del Ministerio de Sanidad
 - [HL7 FHIR](https://www.hl7.org/fhir/): formato de salida interoperable
-    
-La mención de una fuente no implica que todas sus anotaciones sean compatibles entre sí ni que cubran las cuatro clases de entidades.
+
+La mención de una fuente no implica que todas sus anotaciones sean compatibles entre sí ni que cubran todas las categorías de entidades del proyecto.
 
 
 ## Equipo
@@ -89,7 +109,7 @@ La mención de una fuente no implica que todas sus anotaciones sean compatibles 
 | Integrante | Rol principal | Correo |
 |---|---|---|
 | Lucas Amado Oseira | Gestor del proyecto y científico de datos | lucas.amado@rai.usc.es |
-| María Lestón Geada | Científica de datos| maria.leston0@rai.usc.es |
+| María Lestón Geada | Científica de datos | maria.leston0@rai.usc.es |
 | Mariña Vilar Estévez | Portavoz e ingeniera de datos | marina.vilar.estevez@rai.usc.es |
 | Mateo Fraguas Abal | Ingeniero de datos | mateo.fraguas@rai.usc.es |
 
@@ -108,34 +128,81 @@ La mención de una fuente no implica que todas sus anotaciones sean compatibles 
 ## Estructura del repositorio
 
 ```text
-entregas/
-└── cu-03-extraccion-clinica/
-    ├── README.md
-    └── specs/
-        ├── evaluacion-resultados.md
-        ├── extraccion-entidades.md
-        ├── generacion-fhir.md
-        ├── generacion-json.md
-        └── normalizacion-clinica.md
+PIIA-II/
+├── README.md                     # documentación general del proyecto
+├── ARCHITECTURE.md               # arquitectura y flujo del sistema
+├── decisions/                    # ADRs con decisiones de implementación
+├── specs/                        # especificaciones funcionales
+├── app/                          # implementación del pipeline
+│   ├── README.md                 # guía de uso y puesta en marcha
+│   ├── app.py                    # visualizador Streamlit
+│   ├── cu03/                     # módulo principal del pipeline
+│   ├── scripts/                  # ejecutables del proyecto
+│   ├── tests/                    # pruebas funcionales
+│   └── schemas/                  # JSON Schema
+├── entregas/                     # copia de entrega formal
+└── ...
 ```
 
-- `README.md`: visión general, motivación, alcance, datos candidatos, equipo y organización del proyecto.
-- `specs/evaluacion-resultados.md`: protocolo y métricas para comprobar la calidad del prototipo.
-- `specs/extraccion-entidades.md`: comportamiento esperado al detectar y clasificar menciones clínicas.
-- `specs/generacion-fhir.md`: conversión del subconjunto acordado de datos a recursos FHIR y validación.
-- `specs/generacion-json.md`: contrato de salida JSON, validación y gestión de errores.
-- `specs/normalizacion-clinica.md`: reglas para proponer códigos estándar y gestionar casos ambiguos o sin correspondencia.
+Documentación principal:
 
+- [README.md](README.md): visión general del caso de uso, motivación, alcance y estructura del repositorio.
+- [ARCHITECTURE.md](ARCHITECTURE.md): componentes del sistema, flujo de datos y diseño global.
+- [decisions](decisions/): decisiones de implementación con contexto, alternativas y consecuencias.
+- [specs](specs/): requisitos funcionales de extracción, normalización, JSON, FHIR, evaluación y ejecución local.
+- [app/README.md](app/README.md): guía operativa del sistema y ejecución con uv.
 
+---
 
-## Seguridad y limitaciones
+## Coherencia entre la especificación y la implementación
+
+La documentación técnica del proyecto está alineada con el código real y con la estructura del repositorio:
+
+- [specs/extraccion-entidades.md](specs/extraccion-entidades.md) → [app/cu03/ner.py](app/cu03/ner.py)
+  - la extracción se implementa como NER basado en diccionario y reglas, con validación de offsets y tipos.
+- [specs/normalizacion-clinica.md](specs/normalizacion-clinica.md) → [app/cu03/normalization.py](app/cu03/normalization.py)
+  - la normalización conserva estados explícitos y evita asignar código cuando la correspondencia no es inequívoca.
+- [specs/generacion-json.md](specs/generacion-json.md) → [app/cu03/schema.py](app/cu03/schema.py) y [app/cu03/pipeline.py](app/cu03/pipeline.py)
+  - el JSON canónico es el contrato de salida y se valida estrictamente antes de aceptar la salida del pipeline.
+- [specs/evaluacion-resultados.md](specs/evaluacion-resultados.md) → [app/cu03/evaluation.py](app/cu03/evaluation.py) y [app/scripts/evaluate.py](app/scripts/evaluate.py)
+  - la evaluación computa métricas de extracción, normalización y validez de salida.
+- [specs/generacion-fhir.md](specs/generacion-fhir.md) → pendiente como ampliación
+    - la conversión a FHIR (R4 4.0.1) queda documentada como etapa posterior al camino crítico, sin inventar datos no representables.
+- [specs/ejecucion-local.md](specs/ejecucion-local.md) → [app/pyproject.toml](app/pyproject.toml) y [app/README.md](app/README.md)
+  - la ejecución local, las dependencias y las órdenes de prueba y evaluación están documentadas y son reproducibles.
+
+La coherencia general del repositorio es buena: la arquitectura, las ADRs, las specs y el código funcional se apoyan entre sí y no contradicen el caso de uso del proyecto.
+
+---
+
+## Estado actual del proyecto
+
+El proyecto ya cuenta con una implementación funcional del pipeline en la carpeta [app](app/): carga de corpus, extracción de entidades, normalización conservadora, validación JSON, evaluación y ejecución local.
+
+La construcción del sistema sigue la lógica de trabajo propuesta en la arquitectura: la lógica está dividida por etapas y cada módulo tiene una responsabilidad clara.
+
+El entorno de ejecución se recomienda con `uv`, de acuerdo con la configuración del proyecto.
+
+---
+
+## Criterios de éxito
+
+Se considera que el proyecto avanza correctamente cuando:
+
+- acepta textos clínicos en español,
+- detecta entidades relevantes,
+- normaliza conceptos de forma defendible,
+- genera un JSON validable,
+- evalúa sus resultados con métricas reproducibles,
+- mantiene la documentación alineada con el código real.
+
+---
+
+## Seguridad, ética y limitaciones
 
 - La primera versión trabajará únicamente con corpus públicos autorizados y/o textos sintéticos, sin datos identificables de pacientes, por lo que no habrá un riesgo real de fuga de datos.
-
 - Los resultados son experimentales y no deben interpretarse como información validada para la asistencia sanitaria.
-
 - El sistema debe distinguir entre una entidad detectada, un código propuesto y una entidad que no se ha podido normalizar.
-
-- SNOMED CT requiere licencia de afiliado (en España, cubierta por la licencia nacional del Ministerio de Sanidad). Antes de publicar mapeos en un repositorio abierto se confirmarán las condiciones de licencia y no se redistribuirán descripciones ni partes de la terminología hasta entonces.
-
+- Antes de distribuir públicamente recursos derivados de SNOMED CT, se comprobarán las condiciones de la licencia de afiliado aplicable al proyecto y los permisos de redistribución correspondientes. En España existe una licencia nacional gestionada por el Ministerio de Sanidad, pero se verificará su alcance para el uso concreto del equipo.
+- Hasta confirmar dichas condiciones, no se publicarán descripciones oficiales, extractos de la terminología ni tablas de mapeo que puedan implicar la redistribución de contenido licenciado. Los identificadores numéricos y el código desarrollado por el equipo se tratarán de forma diferenciada respecto al contenido terminológico.
 - La conversión a FHIR no implica por sí sola que los datos sean clínicamente correctos ni que el sistema esté listo para integrarse en producción.
