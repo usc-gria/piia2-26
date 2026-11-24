@@ -53,21 +53,28 @@ Este reparto establece las responsabilidades iniciales de cada integrante. La ad
 
 El proyecto cuenta con el acompañamiento técnico de **Balidea** y la colaboración de **Aviporto**, que facilita el acceso a la explotación y la coordinación de las jornadas de captura y pesaje.
 
-## 5. Estructura
+## 5. Estructura y documentación
 
 ```text
 entregas/
 └── cu-12-monitorizacion-avicola/
     ├── README.md
-    └── specs/
-        ├── preparacion-dataset-peso.md
-        ├── estimacion-peso-individual.md
-        └── extraccion-pollos-individuales.md
+    ├── ARCHITECTURE.md
+    ├── specs/
+    │   ├── preparacion-dataset-peso.md
+    │   ├── estimacion-peso-individual.md
+    │   └── extraccion-pollos-individuales.md
+    └── decisions/
+        ├── entrenamiento-con-transfer-learning.md
+        └── dataset-trazable-con-metadatos-csv.md
 ```
 
-- **`README.md`**: presenta el proyecto, su motivación, el alcance, el equipo y la estructura del repositorio.
-- **`specs/`**: contiene las especificaciones funcionales. Cada documento describe qué construir, por qué, las restricciones y los criterios de aceptación:
-  - **`preparacion-dataset-peso.md`**: define la transformación de las grabaciones individuales y los registros de pesaje en un dataset de imágenes etiquetadas, conservando su trazabilidad y estableciendo su división para entrenamiento, validación y test.
-  - **`estimacion-peso-individual.md`**: define la estimación del peso de un pollo a partir de su imagen, incluyendo las condiciones de entrada, el resultado esperado y la evaluación del modelo.
-  - **`extraccion-pollos-individuales.md`**: define la localización y extracción de animales en escenas con varios pollos, generando imágenes individuales que puedan utilizarse como entrada del estimador de peso.
+| Documento | Contenido |
+| --- | --- |
+| [Arquitectura de la solución](ARCHITECTURE.md) | Describe los componentes, sus entradas y salidas, los flujos de entrenamiento y predicción y la trazabilidad de los datos. Incluye el [diagrama de arquitectura](ARCHITECTURE.md#2-vista-general-de-la-arquitectura). |
+| [Preparación del dataset de imágenes y pesos](specs/preparacion-dataset-peso.md) | Especifica la transformación de grabaciones y registros de pesaje en imágenes etiquetadas y su división por animal en entrenamiento, validación y test. |
+| [Estimación de peso individual](specs/estimacion-peso-individual.md) | Especifica las entradas, salidas y criterios de aceptación del estimador de peso. |
+| [Extracción de pollos individuales](specs/extraccion-pollos-individuales.md) | Especifica la detección, el filtrado y la generación de recortes individuales a partir de escenas con varios animales. |
+| [Entrenamiento con aprendizaje por transferencia](decisions/entrenamiento-con-transfer-learning.md) | Documenta la decisión de adaptar modelos preentrenados para estimar el peso, su motivación, las alternativas y las referencias prácticas. |
+| [Dataset trazable con metadatos CSV](decisions/dataset-trazable-con-metadatos-csv.md) | Documenta la organización de los datos y su relación con animales, pesos, sesiones y vídeos de origen. |
   
