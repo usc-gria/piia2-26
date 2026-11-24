@@ -1,6 +1,6 @@
 ---
 description: Módulo de src/ que valida el JSON de extracción contra el esquema de su tipo y lista los campos ausentes.
-state: Pendiente
+state: Hecha
 ---
 
 # Spec — Validación del JSON de extracción
@@ -30,7 +30,7 @@ Recibe el texto en bruto que devuelve `ModelClient.extract()` (`ModelResponse.co
 Cada mensaje de `errors` empieza por la ruta del campo, con la misma notación que `missing_fields`, seguida de `: ` y el motivo (`financials.total_charges: '1508' is not of type 'number'`). Si falta o sobra una clave, la ruta es la de esa clave (`insurance`, `notes`), no la del objeto que la contiene. Si el texto no es JSON o no es un objeto, el mensaje no lleva ruta.
 
 ## Por qué
-`ARCHITECTURE.md` prevé un componente de validación y todavía no existe. Las primeras pruebas mostraron que el modo `json_schema` estricto de Groq no basta: el modelo genera salidas degeneradas, y una respuesta no debe darse por buena solo por haber pedido salida estructurada. Además, tres piezas necesitan la misma definición de «JSON válido» y de «campo ausente»: el script de `specs/prueba-modelo-groq.md`, la app de `specs/prototipo-streamlit.md` y la evaluación.
+`ARCHITECTURE.md` prevé un componente de validación y todavía no existe. Las primeras pruebas mostraron que el modo `json_schema` estricto de Groq no basta: el modelo genera salidas degeneradas, y una respuesta no debe darse por buena solo por haber pedido salida estructurada. Además, tres piezas necesitan la misma definición de «JSON válido» y de «campo ausente»: el script de `specs/evaluacion-metricas.md`, la app de `specs/prototipo-streamlit.md` y la evaluación.
 
 ## Restricciones
 - Aplica `decisions/esquemas-extraccion-documental.md`: todas las claves obligatorias, `null` si no hay dato y ninguna propiedad adicional. Una respuesta con propiedades no definidas es inválida.
@@ -49,9 +49,11 @@ Cada mensaje de `errors` empieza por la ruta del campo, con la misma notación q
   4. Sobra una clave `notes`: inválido.
   5. `financials.total_charges` es `"1508"` (texto): inválido, y el error nombra `financials.total_charges`.
   6. `patient.dob` es `"03/11/1978"` o `"19781103"`: inválido por formato en los dos casos. El segundo detecta una versión de `jsonschema` que valida `date` solo con `date.fromisoformat`, que en Python 3.11 lo acepta.
-  7. `patient.dob` es `null` y `medications` es `[]`: válido, y `missing_fields` contiene `patient.dob` y `medications`.
+  7. `patient.dob` es `null` y `procedures` es `[]`: válido, y `missing_fields` contiene `patient.dob` y `procedures`.
   8. `document_type="invoice"`: lanza `ValueError`.
-- Con `discharge_summary`, un JSON sin `hospital_course` es inválido.
+- El mismo fichero cubre estos casos con `discharge_summary`:
+  1. Un JSON sin `hospital_course`: inválido.
+  2. `patient.mrn` es `null`, `procedures[1].desc` es `null` y `medications` es `[]`: válido, y `missing_fields` es exactamente `["patient.mrn", "procedures[1].desc", "medications"]`, en ese orden.
 - `python -m pytest` en verde, con todas las pruebas del repositorio.
 - `ruff check .` y `ruff format --check .` en verde.
 - `README.md` describe el módulo en su sección de código.
