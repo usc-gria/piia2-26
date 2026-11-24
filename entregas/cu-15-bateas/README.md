@@ -24,7 +24,7 @@ El análisis de supervivencia evita ese problema. Trata a cada polígono como un
 
 ### Dentro del alcance
 
-- **Datos:** la ría de Arousa (2015-2025) y las demás rías que recibamos de INTECMAR.
+- **Datos:** las rías de Arousa, Vigo y Pontevedra (2015-2025) de INTECMAR, y los datos públicos de viento, afloramiento y fitoplancton que mejoran el modelo (ver [ampliación de fuentes](decisions/ampliacion-fuentes-de-datos.md)).
 - **Cultivo:** solo mejillón.
 - **Preparación de datos:** validar, limpiar y unificar los datos de cada ría (spec 1).
 - **Predicción:** un único modelo de supervivencia para todas las rías, que estima la permanencia de un polígono abierto y de uno cerrado a 1, 3, 7 y 14 días (spec 2).
@@ -36,7 +36,7 @@ El análisis de supervivencia evita ese problema. Trata a cada polígono como un
 | Fuera de alcance | Motivo |
 |---|---|
 | Otras especies (ostra, almeja, vieira...) | Acumulan y eliminan las toxinas a otro ritmo. Además, hay muy pocos muestreos en Galicia. |
-| Nuevas fuentes de datos (fitoplancton, afloramiento, satélite) | Podrían mejorar el modelo, pero no las tenemos y conseguirlas ampliaría demasiado el tiempo del proyecto. |
+| Conteos de fitoplancton tóxico de INTECMAR | No son públicos: solo se publica la semana en curso. (En la entrega 1 aquí poníamos también afloramiento y satélite, pero al final sí los usamos; ver [ampliación de fuentes](decisions/ampliacion-fuentes-de-datos.md).) |
 | Aplicación web desplegada, API o ejecución en tiempo real | Requieren infraestructura y mantenimiento que no son el objetivo del proyecto. |
 | Modelos más avanzados (Cox, Random Survival Forest, multiestado, riesgos competitivos) | Usamos un solo método que el equipo pueda entender y defender. |
 | Un modelo distinto para cada ría | Queremos un modelo general, aplicable a una ría nueva. |
@@ -61,7 +61,7 @@ Spec 3: informe de dependencia de datos (usa también los resultados de la spec 
 
 | Supuesto o riesgo | Qué implica | Qué haremos |
 |---|---|---|
-| Los datos nuevos todavía no han llegado | No sabemos qué rías ni qué periodo tendremos. | Exigimos el mismo formato que Arousa. Si no llegan a tiempo, evaluaremos dejando fuera zonas de Arousa e indicaremos que esa prueba es menos exigente. |
+| Los datos nuevos podían no llegar a tiempo | Ya no es un riesgo: llegaron Vigo y Pontevedra, en el mismo formato que Arousa. | Evaluamos dejando fuera una ría entera. |
 | No tenemos el histórico oficial de aperturas y cierres | Estimamos el estado a partir de las toxinas y el límite legal, sin ver cierres preventivos ni reglas de reapertura. | Lo dejamos claro en los resultados. |
 | Suponemos que el resultado del laboratorio se conoce el mismo día | Los resultados pueden ser algo optimistas. | Lo indicamos como limitación. |
 
@@ -75,18 +75,34 @@ Spec 3: informe de dependencia de datos (usa también los resultados de la spec 
 | Marcos Suárez Sertal | Evaluación: métricas y comparación por ría | marcos.suarez.sertal@rai.usc.es |
 | Martín Otero Tourís | Documentación y coordinación | martin.otero.touris@rai.usc.es |
 
-## Estructura
+## Arquitectura y decisiones
 
-En esta primera entrega solo hay documentación, todavía no hay código.
+En [ARCHITECTURE.md](ARCHITECTURE.md) está el diagrama del sistema y cómo pasan los datos desde los
+Excel de INTECMAR hasta `predecir(punto, fecha)`. Las decisiones más importantes están en `decisions/`:
+
+- [Modelo de supervivencia en tiempo discreto](decisions/modelo-supervivencia-tiempo-discreto.md): por qué landmarks y gradient boosting.
+- [Evaluación en una ría no vista](decisions/evaluacion-ria-no-vista.md): cómo comprobamos que funciona en una ría nueva.
+- [Variables que sirvan en cualquier ría](decisions/variables-transferibles-entre-rias.md): toxinas divididas por su límite, nada que identifique al polígono y vecinos por zona.
+- [Ampliación de las fuentes de datos](decisions/ampliacion-fuentes-de-datos.md): qué datos nuevos metimos y cómo decidimos cuáles.
+
+## Estructura
 
 ```
 entregas/cu-xx-cierres-bateas/
   README.md                            Este documento: qué es el proyecto, alcance y equipo
+  ARCHITECTURE.md                      Componentes del sistema y flujo de datos
   specs/
     preparacion-datos-multi-ria.md     Qué debe hacer la preparación de datos y cómo se comprueba
     prediccion-supervivencia.md        Qué debe hacer el modelo y cómo se comprueba
     informe-dependencia-datos.md       Qué debe contener el informe de dependencia de datos y cómo se comprueba
+  decisions/
+    modelo-supervivencia-tiempo-discreto.md
+    evaluacion-ria-no-vista.md
+    variables-transferibles-entre-rias.md
+    ampliacion-fuentes-de-datos.md
 ```
+
+El código (`bateas/`, notebooks, tests y datos) está en nuestro repositorio, en `modelo_piia2/`.
 
 ## Glosario
 
